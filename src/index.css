@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.ProseMirror{
+    padding: 60px 40px;
+    border: 0.5px solid rgba(128, 128, 128, 0.153);
+    border-radius: 15px;
+}
+.ProseMirror:focus{
+    outline: none;
+}
+*:not(code){
+    font-family: "Inter";
+}
+body{
+    background-color: #020817;
+}
+ol{
+    list-style-type: decimal-leading-zero;
+}
+ul{
+    list-style-type: disc;
+}
