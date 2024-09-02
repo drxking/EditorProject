@@ -1,14 +1,23 @@
 import "./styles.css";
 
+import Underline from "@tiptap/extension-underline";
+import Image from "@tiptap/extension-image";
 import { Color } from "@tiptap/extension-color";
 import ListItem from "@tiptap/extension-list-item";
 import TextStyle from "@tiptap/extension-text-style";
 import { EditorProvider, useCurrentEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import React from "react";
+import React, { useCallback } from "react";
 
 const MenuBar = () => {
   const { editor } = useCurrentEditor();
+  const addImage = useCallback(() => {
+    const url = window.prompt("URL");
+
+    if (url) {
+      editor.chain().focus().setImage({ src: url }).run();
+    }
+  }, [editor]);
 
   if (!editor) {
     return null;
@@ -33,12 +42,20 @@ const MenuBar = () => {
             I
           </button>
           <button
+            onClick={() => editor.chain().focus().toggleUnderline().run()}
+            className="underline border border-r-gray-700 border-t-transparent border-b-transparent border-l-transparent px-5  "
+
+          >
+            U
+          </button>
+          <button
             onClick={() => editor.chain().focus().toggleStrike().run()}
             disabled={!editor.can().chain().focus().toggleStrike().run()}
             className=" px-4 "
           >
             <del> Del </del>
           </button>
+          
         </div>
 
         <button
@@ -114,16 +131,26 @@ const MenuBar = () => {
             onClick={() => editor.chain().focus().toggleBulletList().run()}
             className="border border-l-transparent border-t-transparent border-b-transparent px-2 border-r-gray-800"
           >
-            <i class="ri-list-check text-xl"></i>
+            <i className="ri-list-check text-xl"></i>
           </button>
           <button
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
             className=" px-2 border-r-gray-800"
           >
-            <i class="ri-list-ordered-2 text-xl"></i>
+            <i className="ri-list-ordered-2 text-xl"></i>
           </button>
         </div>
-        <div className="border flex items-center justify-center px-4 gap-5 border-r-gray-900 border-l-transparent border-y-transparent">
+        <div className="border px-4 h-6 border-transparent border-r-gray-800 flex items-center justify-center">
+          <button
+            onClick={addImage}
+            className="py-1 rounded-lg flex flex-col items-center justify-center -gap-1"
+          >
+            <i className="ri-image-add-fill text-lg"></i>
+            <p className="text-xs text-gray-400 leading-none">Insert Image</p>
+          </button>
+        </div>
+
+        <div className="border flex items-center justify-center px-4 gap-5 border-r-gray-800 border-l-transparent border-y-transparent">
           <button
             onClick={() => editor.chain().focus().toggleCode().run()}
             disabled={!editor.can().chain().focus().toggleCode().run()}
@@ -159,7 +186,7 @@ const MenuBar = () => {
             disabled={!editor.can().chain().focus().undo().run()}
             className="border border-l-transparent border-t-transparent border-b-transparent pr-2 border-r-gray-800 flex gap-2 items-center justify-center"
           >
-            <i class="ri-arrow-go-back-line"></i>
+            <i className="ri-arrow-go-back-line"></i>
             Undo
           </button>
           <button
@@ -168,28 +195,40 @@ const MenuBar = () => {
             className="flex gap-2 justify-center items-center"
           >
             Redo
-            <i class="ri-arrow-go-forward-line"></i>
+            <i className="ri-arrow-go-forward-line"></i>
           </button>
         </div>
         <div className="flex gap-2 items-center justify-center border border-gray-800 bg-gray-900 py-[6px] px-2 rounded-lg">
           <p>Color:</p>
-        <input
-          type="color"
-          onInput={(event) =>
-            editor.chain().focus().setColor(event.target.value).run()
-          }
-          value={editor.getAttributes("textStyle").color}
-          data-testid="setColor"
-          className="bg-transparent"
-        />
+          <input
+            type="color"
+            onInput={(event) =>
+              editor.chain().focus().setColor(event.target.value).run()
+            }
+            value={editor.getAttributes("textStyle").color}
+            data-testid="setColor"
+            className="bg-transparent"
+          />
         </div>
-        
       </div>
     </div>
   );
 };
 
 const extensions = [
+  Image.configure({
+    inline: true,
+    allowBase64: true,
+    HTMLAttributes: {
+      class: "my-custom-class draggable",
+    },
+    resizable:true
+  }),
+  Underline.configure({
+    HTMLAttributes: {
+      class: "my-custom-class",
+    },
+  }),
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
   TextStyle.configure({ types: [ListItem.name] }),
   StarterKit.configure({
@@ -242,7 +281,9 @@ export default () => {
     <div className="py-7 px-44  text-[#e5e5e5] min-h-[100vh] flex flex-col gap-5">
       <nav className=" pb-4 flex justify-between">
         <h1 className="text-xl font-medium">Shidvin</h1>
-        <a href="#" className="flex items-center justify-center gap-2">Check my Github<i class="ri-github-fill text-3xl"></i></a>
+        <a href="#" className="flex items-center justify-center gap-2">
+          Check my Github<i className="ri-github-fill text-3xl"></i>
+        </a>
       </nav>
       <EditorProvider
         slotBefore={<MenuBar />}

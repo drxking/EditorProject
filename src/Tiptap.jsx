@@ -2,9 +2,10 @@
 import React from 'react';
 import { EditorProvider, FloatingMenu, BubbleMenu } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import Underline from '@tiptap/extension-underline';
 
 // Define your extension array
-const extensions = [StarterKit];
+const extensions = [StarterKit,Image,Underline];
 
 const content = '<p>Hello World!</p>';
 
